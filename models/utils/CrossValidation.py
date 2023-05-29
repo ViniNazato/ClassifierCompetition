@@ -16,8 +16,8 @@ class CrossValidation:
     
     def __post_init__(self):
         self.SKFcv = StratifiedKFold(n_splits=self.n_splits) 
-        
-    def grid_search(self, params: dict,scoring:str ='f1-score',verbose:bool=True):
+          
+    def grid_search(self, params: dict,scoring:str ='roc-auc',verbose:bool=True):
        
         verbose = 1 if verbose == True else 0
         
@@ -26,11 +26,7 @@ class CrossValidation:
         
         print(grid_model.best_estimator_)
         
-        results_df = pd.DataFrame(grid_model.cv_results_)
-        results_df = results_df.sort_values(by=["rank_test_score"])
-        
         return grid_model, grid_model.best_params_
-    
     
     def roc_cv_visualization(self, model):
 
