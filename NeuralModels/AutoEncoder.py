@@ -14,18 +14,35 @@ class AutoEncoder(nn.Module):
         super(AutoEncoder, self).__init__()
         
         self.encoder = nn.Sequential(
-            nn.Linear(21, 21),
-            nn.Tanh(),
-            nn.Linear(21, 14),
-            nn.ReLU(),
+            nn.Linear(21, 19),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(19, 14),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(14, 7),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(7, 5),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(5, 3),
+            nn.LeakyReLU(negative_slope=0.4)
         )
         
         self.decoder = nn.Sequential(
-            nn.Linear(14, 21),
-            nn.Tanh(),
-            nn.Linear(21, 21),
-            nn.ReLU()
+            nn.Linear(3, 5),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(5, 7),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(7, 14),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(14, 19),
+            nn.LeakyReLU(negative_slope=0.4),
+            nn.Linear(19, 21),
+            nn.LeakyReLU(negative_slope=0.4)
         )
+    
+        for m in self.modules():
+                if isinstance(m, nn.Linear):
+                    m.weight = nn.init.kaiming_normal_(m.weight)
+                    m.bias.data.fill_(0)   
 
     def forward(self, x):
         x = self.encoder(x)
